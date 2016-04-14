@@ -1,0 +1,56 @@
+<html>
+<body>
+	<b><i>Input:</b></i><br/>
+	1) Take Input of Required Number of numbers (say N)<br/>
+	2) Take input of 'N' numbers (all less than 100)<br/>
+	<br/>
+	<hr>
+	<br/>
+	<b><i>Logic:</b></i><br/>
+	Say N=3 and the list of 3 numbers be [70, 40, 80]<br/>
+	<br/>
+	<b><i>I need: (Output)</i></b><br/>
+	&nbsp;&nbsp;N + 1 Iterations (i.e. 3+1=4 iterations)<br/>
+	&nbsp;&nbsp;<u><i>Iteration-1:</i></u><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(70, 40, 80)]<br/>
+	&nbsp;&nbsp;<u><i>Iteration-2:</i></u><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(100-70, 40, 80), (70, 100-40, 80), (70, 40, 100-80)]<br/>
+	&nbsp;&nbsp;&nbsp;= [(30, 40, 80), (70, 60, 80), (70, 40, 20)]<br/>
+	&nbsp;&nbsp;<u><i>Iteration-3:</i></u><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(100-70, 100-40, 80), (100-70, 40, 100-80), (70, 100-40, 100-80)]<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(30, 60, 80), (30, 40, 20), (70, 60, 20)]<br/>
+	&nbsp;&nbsp;<u><i>Iteration-4:</i></u><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(100-70, 100-40, 100-80)]<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;= [(30, 60, 20)]<br/>
+	<br/>
+	<hr>
+	<br/>
+	<b><i>More Info: (For N = 3)</i></b><br/>
+	&nbsp;&nbsp;In the First iteration - No element in the list needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Second iteration - Each time one element needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Third iteration - Each time two elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;In the Fourth iteration - All the 3 elements needs to be subtracted with 100<br/>
+	<br/>
+	
+	<b><i>More Info: (For N = 4)</i></b><br/>
+	&nbsp;&nbsp;In the First iteration - No element in the list needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Second iteration - Each time one element needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Third iteration - Each time two elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;In the Fourth iteration - Each time three elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;In the Fifth iteration - All the 4 elements needs to be subtracted with 100<br/>
+	<br/>
+
+	<b><i>More Info: (For N = N)</i></b><br/>
+	&nbsp;&nbsp;In the First iteration - No element in the list needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Second iteration - Each time one element needs to be subtracted with 100<br/>
+	&nbsp;&nbsp;In the Third iteration - Each time two elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;In the Fourth iteration - Each time three elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;In the Fifth iteration - Each time four elements needs to be subtracted with 100 (All possible combinations)<br/>
+	&nbsp;&nbsp;..<br/>
+	&nbsp;&nbsp;..<br/>
+	&nbsp;&nbsp;..<br/>
+	&nbsp;&nbsp;.. So on<br/>
+	&nbsp;&nbsp;In the N<sup>th</sup> iteration - Each time four elements needs to be subtracted with 100 (All possible combinations)<br/>
+	<br/>
+</body>
+</html>
