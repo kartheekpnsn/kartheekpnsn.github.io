@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Solution-1</title>
+<style>
+	span
+	{
+		color: #003366;
+	}
+	span2
+	{
+		color: #009933;
+	}
+</style>
+<link rel="icon" type="image/png" href="../favicon(1).ico">
+</head>
+<body>
+<center><h1>Solution for <a style ="color: #003366;" href = "http://kartheekpnsn.github.io/Problems/Problem3.html">this</a> Problem</h1></center>
+<pre style="background-color: #D3D3D3; border-color: black; border-style: solid;padding-top: 50px;padding-left: 250px;">
+<span>#!/usr/bin/env python
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#               File Owner - Kartheek Palepu            #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #</span>
+def removeDups(s):
+	s = s.replace('\n', ' <@> ') # In order not to remove the new line characters
+	ulist = []
+	[ulist.append(x) for x in s.split(' ') if x == '<@>' or x not in ulist]
+	s = ' '.join(ulist)
+	s = s.replace(' <@> ', '\n')
+	return(s)
+
+print removeDups("I am a good boy\nI a good kartheek\nis the best bud")
+
+<hr>
+
+<span2>
+<b><u style="color: black;">Output:</u>
+I am a good boy
+kartheek
+is the best bud
+</b>
+</span2>
+</pre>
+</body>
+</html>
