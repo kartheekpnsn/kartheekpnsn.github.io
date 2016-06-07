@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <title>The d3 test</title>
+		<style>
+			.chart {
+			}
+
+			.main text {
+			    font: 10px sans-serif;	
+			}
+
+			.axis line, .axis path {
+			    shape-rendering: crispEdges;
+			    stroke: black;
+			    fill: none;
+			}
+
+			circle {
+			    fill: steelblue;
+			}
+
+		</style>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript" src="output.js"></script>
+		<script>
+			function sleep(milliseconds) {
+				var start = new Date().getTime();
+				for (var i = 0; i < 1e7; i++) {
+					if ((new Date().getTime() - start) > milliseconds){
+						break;
+					}
+				}
+			}
+			//var data = [[1, 1], [2, 2], [3, 3]];
+/*			var parentArray = [	[[1, 0.5], [2, 0.9], [3, 0.6], [4, 0.5], [5, 0.6], [6, 0.7]],
+								[[1, 0.2], [2, 0.7], [3, 0.4], [4, 0.3], [5, 0.6], [6, 0.7]],
+								[[1, 0.1], [2, 0.5], [3, 0.7], [4, 0.4], [5, 0.6], [6, 0.7]],
+								[[1, 0.6], [2, 0.9], [3, 0.3], [4, 0.6], [5, 0.6], [6, 0.7]],
+								[[1, 0.3], [2, 0.7], [3, 0.6], [4, 0.3], [5, 0.6], [6, 0.7]]];*/
+			console.log(parentArray[1].length)
+
+			var margin = {top: 20, right: 15, bottom: 60, left: 60}
+				, width = 960 - margin.left - margin.right
+				, height = 500 - margin.top - margin.bottom;
+
+			var x = d3.scale.linear()
+				.domain([0, 1])//d3.max(data, function(d) { return d[0]; })])
+				.range([ 0, width ]);
+
+			//alert (data[0][0]);
+
+			var y = d3.scale.linear()
+				.domain([0, 100])//d3.max(data, function(d) { return d[1]; })])
+				.range([ height, 0 ]);
+
+			var chart = d3.select('body')
+				.append('svg:svg')
+				.attr('width', width + margin.right + margin.left)
+				.attr('height', height + margin.top + margin.bottom)
+				.attr('class', 'chart')
+
+			var main = chart.append('g')
+				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+				.attr('width', width)
+				.attr('height', height)
+				.attr('class', 'main')   
+
+			// draw the x axis
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient('bottom');
+
+			main.append('g')
+				.attr('transform', 'translate(0,' + height + ')')
+				.attr('class', 'main axis date')
+				.call(xAxis);
+
+			// draw the y axis
+/*			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient('left');
+
+			main.append('g')
+				.attr('transform', 'translate(0,0)')
+				.attr('class', 'main axis date')
+				.call(yAxis);*/
+
+			var gg = main.append("svg:g");
+			var dots = gg.selectAll("scatter-dots")
+				.data(parentArray)
+				.enter().append("svg:circle")
+				.attr("cx", function(d, i) { return x(d[0][1]);})
+				.attr("cy", function(d, i) { return y(i+1);})
+				.attr("r", 4);
+			
+			//make a global variable
+			var index = 0;
+			doTransition();
+
+			function doTransition() {
+				d3.selectAll("circle").transition()
+					.duration(200)
+					.attr("cx", function(d, i) { return x(d[index][1]);})
+					.style("fill",function(d, i){
+						if (d[index][1] > 0.5) 
+							return "red";
+						else
+							return "green";
+					})
+					.each("end", function(d, i) { 
+						if (i == parentArray.length -1) {//when last circle is completed
+				    		index++;//increment index
+				    		if (index > parentArray[1].length - 1)//the data array has length of 2
+				      			return;
+				    		doTransition();//do teh transition
+				  		}
+					});
+			}
+		</script>
+  	</body>
+</html>
