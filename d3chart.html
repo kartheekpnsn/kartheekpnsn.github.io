@@ -14,27 +14,54 @@
 			    shape-rendering: crispEdges;
 			    stroke: black;
 			    fill: none;
+			    stroke-width: 3px;
 			}
 
 			circle {
 			    fill: steelblue;
 			}
 
+			#iterations{
+				position: absolute;
+				top: 331px;
+				left: 81px;
+				width: 100px;
+				height: 40px;
+			}
+
+			#perfValues
+			{
+				position: absolute;
+				top: 331px;
+				left: 175px;
+				width: 500px;
+				height: 40px;
+			}
+
+			.tooltip
+			{
+				position: absolute;
+				width: 200px;
+				height: 28px;
+				color: #333333;
+				font-size: 12px;
+				pointer-events: none;
+			}
+
 		</style>
 		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 	</head>
 	<body>
+		<div id = "perfValues">
+			<i><p id ="precision" style="color : #5858FA;"></p></i>
+		</div>
+		<div id = "iterations">
+			<b><p id ="iterVal" style="color : #5858FA;"></p></b>
+		</div>
 		<script type="text/javascript" src="output.js"></script>
 		<script>
-			function sleep(milliseconds) {
-				var start = new Date().getTime();
-				for (var i = 0; i < 1e7; i++) {
-					if ((new Date().getTime() - start) > milliseconds){
-						break;
-					}
-				}
-			}
-			//var data = [[1, 1], [2, 2], [3, 3]];
+			document.getElementById("perfValues").style.visibility = "hidden";
+			//document.getElementById("iterVal").style.visibility = "hidden";
 /*			var parentArray = [	[[1, 0.5], [2, 0.9], [3, 0.6], [4, 0.5], [5, 0.6], [6, 0.7]],
 								[[1, 0.2], [2, 0.7], [3, 0.4], [4, 0.3], [5, 0.6], [6, 0.7]],
 								[[1, 0.1], [2, 0.5], [3, 0.7], [4, 0.4], [5, 0.6], [6, 0.7]],
@@ -42,13 +69,14 @@
 								[[1, 0.3], [2, 0.7], [3, 0.6], [4, 0.3], [5, 0.6], [6, 0.7]]];*/
 			console.log(parentArray[1].length)
 
+			var padding = 100;
 			var margin = {top: 20, right: 15, bottom: 60, left: 60}
-				, width = 960 - margin.left - margin.right
-				, height = 500 - margin.top - margin.bottom;
+				, width = 500 - margin.left - margin.right
+				, height = 360 - margin.top - margin.bottom;
 
 			var x = d3.scale.linear()
 				.domain([0, 1])//d3.max(data, function(d) { return d[0]; })])
-				.range([ 0, width ]);
+				.range([ 0, width]);
 
 			//alert (data[0][0]);
 
@@ -78,6 +106,30 @@
 				.attr('class', 'main axis date')
 				.call(xAxis);
 
+			// name for x-axis
+			main.append("text")
+				.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+				.attr("transform", "translate("+ (width/2) +","+(height + padding/3)+")")  // centre below axis
+				.text("x-axis: Probability");
+
+			// add background color to the graph
+			main.append("rect")
+				.attr("width", 423)
+				.attr("height", 278)
+				.attr("fill", "pink")
+				.attr("opacity", 0.5);
+
+			main.append("rect")
+				.attr("width", x(cutoff))
+				.attr("height", 278)
+				.attr("fill", "#3c9f26")
+				.attr("opacity", 0.5);
+
+			// add the tooltip area to the webpage
+			var tooltip = d3.select("body").append("div")
+				.attr("class", "tooltip")
+				.style("opacity", 0);
+
 			// draw the y axis
 /*			var yAxis = d3.svg.axis()
 				.scale(y)
@@ -94,30 +146,73 @@
 				.enter().append("svg:circle")
 				.attr("cx", function(d, i) { return x(d[0][1]);})
 				.attr("cy", function(d, i) { return y(i+1);})
-				.attr("r", 4);
+				.attr("r", 2.5);
 			
 			//make a global variable
 			var index = 0;
 			doTransition();
 
 			function doTransition() {
-				d3.selectAll("circle").transition()
-					.duration(200)
-					.attr("cx", function(d, i) { return x(d[index][1]);})
+				dots.transition()
+					.duration(5)
+					.ease('elastic')
+					.attr("cx", function(d, i) { document.getElementById("iterVal").innerHTML = "Iteration: " + (index + 1); return x(d[index][1]);})
+					.attr("r", function(d, i){
+						if(predDetail[i] == 'FP') {
+							return 3;
+						}
+						else if(predDetail[i] == 'FN') {
+							return 3;
+						}
+						else {
+							return 2.5;
+						}
+					})
 					.style("fill",function(d, i){
-						if (d[index][1] > 0.5) 
-							return "red";
-						else
-							return "green";
+						if(predDetail[i] == 'FP') {
+							return "#ba025d";
+						}
+						else if(predDetail[i] == 'FN') {
+							return "black"
+						}
+						else{
+							if (d[index][1] > cutoff) {
+								return "red";
+							}
+							else {
+								return "green";
+							}
+						}
 					})
 					.each("end", function(d, i) { 
 						if (i == parentArray.length -1) {//when last circle is completed
 				    		index++;//increment index
 				    		if (index > parentArray[1].length - 1)//the data array has length of 2
+				    		{
+				    			document.getElementById("perfValues").style.visibility = "visible";
+				    			document.getElementById("precision").innerHTML = ", Precision: " + precision + "%, Recall: " + recall + "%, Cutoff: " + cutoff;
+								toolTip();
 				      			return;
-				    		doTransition();//do teh transition
+				    		}
+				    		doTransition();//do the transition
 				  		}
 					});
+			}
+
+			function toolTip(){
+				dots.on("mouseover", function(d, i) {
+					tooltip.transition()
+						.duration(200)
+						.style("opacity", .9);
+					tooltip.html("(Point: " + i + ", Prob: " + d[index-1][1] + ")")
+						.style("left", (d3.event.pageX + 5) + "px")
+						.style("top", (d3.event.pageY - 18) + "px");
+				})
+				.on("mouseout", function(d) {
+					tooltip.transition()
+						.duration(500)
+						.style("opacity", 0);
+				});
 			}
 		</script>
   	</body>
