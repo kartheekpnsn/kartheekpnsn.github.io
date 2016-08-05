@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Solution-3</title>
+<style>
+	span
+	{
+		color: #003366;
+	}
+	span2
+	{
+		color: #009933;
+	}
+</style>
+<link rel="icon" type="image/png" href="../favicon(1).ico">
+</head>
+<body>
+<center><h1>Solution for <a style ="color: #003366;" href = "http://kartheekpnsn.github.io/Problems/Problem4.html">this</a> Problem</h1></center>
+<pre style="background-color: #D3D3D3; border-color: black; border-style: solid;padding-top: 50px;padding-left: 250px;">
+<span>#!/usr/bin/env python
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#               File Owner - Kartheek Palepu            #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #</span>
+import re
+import string
+def check_fun(data):
+	data = list(data)
+	vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
+	data2 = ''.join(['x' if data[i].upper() in vowels else 'y' for i in range(len(data))])
+	data = re.findall('xx|yy|^x$|^y$', data2)
+	if len(data) > 0:
+		temp = 0
+	else:
+		temp = 1
+	return(temp)
+
+def checkio(text):
+	data = str(text)
+	replace_punctuation = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+	data = data.translate(replace_punctuation)
+	data = data.split()
+	data = [i for i in data if len(re.findall('[0-9]', i)) == 0]
+	print data
+	data = [i for i in data if check_fun(i) == 1]
+	print data
+	return(len(data))
+
+if __name__ == '__main__':
+	print checkio(u"My name is ...") # Prints 3
+	print checkio(u"Hello world") # Prints 0
+	print checkio(u"A quantity of striped words.") # Prints 1
+	print checkio(u"Dog,cat,mouse,bird.Human.") # Prints 3
+
+
+<hr>
+
+</pre>
+</body>
+</html>
