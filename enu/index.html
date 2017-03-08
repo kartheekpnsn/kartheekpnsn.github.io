@@ -1,0 +1,439 @@
+<html>
+<head>
+	<script type="text/javascript" src="crossfilter.js"></script>
+	<script src="d3.min.js"></script>
+	<script type="text/javascript" src="dc.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="dc.css" media="screen" />
+</head>
+<body>
+	
+	<div id="d2"></div> <!-- For overall line chart -->
+	<div id="d1"></div> <!-- For daily line chart -->
+	
+	<select id="month">
+		<!-- <option value="0">Select Month</option> -->
+		<option value="Jul-09">Jul-09</option>
+		<option value="Aug-09">Aug-09</option>
+		<option value="Sep-09">Sep-09</option>
+		<option value="Oct-09">Oct-09</option>
+		<option value="Nov-09">Nov-09</option>
+		<option value="Dec-09">Dec-09</option>
+		<option value="Jan-10">Jan-10</option>
+		<option value="Feb-10">Feb-10</option>
+		<option value="Mar-10">Mar-10</option>
+		<option value="Apr-10">Apr-10</option>
+		<option value="May-10">May-10</option>
+		<option value="Jun-10">Jun-10</option>
+		<option value="Jul-10">Jul-10</option>
+		<option value="Aug-10">Aug-10</option>
+		<option value="Sep-10">Sep-10</option>
+		<option value="Oct-10">Oct-10</option>
+		<option value="Nov-10">Nov-10</option>
+		<option value="Dec-10">Dec-10</option>
+	</select>
+
+	<select id="s2"></select> <!-- For ID Drop down -->
+
+	<button id="b1" onclick="f3()">G O</button>
+	
+	<script type="text/javascript">
+		var data;
+		var parseDate = d3.time.format("%Y-%m-%d").parse;
+		var numberFormat=d3.format('.2f');
+		d3.csv("dc_total_data.csv", function(data1) {
+			data1.forEach(function(d) {
+				d.new1 = parseDate(d.new1); // why july becoming june?
+				d.year = d.new1.getFullYear();
+				d.month = d.new1.getMonth() + 1; // to make july (which has become june) to july
+				d.consumption = + d.consumption; // convert to integer
+				d.day = + d.day; // convert to integer
+				d.new_month = d.new_month;
+				d.max = + d.max;
+				d.min = + d.min;
+				d.mean = + d.mean;
+			});
+
+			id_arr = d3.map(data1, function(d) {
+				return d.grid_id;
+			}).keys();
+			console.log(data1[1]);
+			for(var i = 0; i < id_arr.length; i++) {
+				var s = document.getElementById('s2');
+				var option = document.createElement("option");
+				option.text = id_arr[i];
+				option.value = id_arr[i];
+				s.add(option, null);
+			}
+			data = data1;
+			render(data, filter = '7-2009', id = id_arr[0]); // default display first ids first month
+			render2(data, id = id_arr[0]); // default display first ids monthly consumption
+		});
+
+		function f3() {
+			var mon = document.getElementById("month").value;
+			mon = mon.split("-")
+			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			f_month = mon[0];
+			f_year = + mon[1] + 2000;
+			var id = 0
+			for(i = 0; i < months.length; i++) {
+				if(months[i] == f_month) {
+					id = i + 1;
+				}
+			}
+			var filter = id + "-" + f_year;
+			var id = document.getElementById("s2").value;
+			render(data, filter, id);
+			render2(data, id);
+		}
+
+		function render(data, filter, id) {
+			sample = filter.split("-");
+			f_month = + sample[0];
+			f_year = + sample[1];
+			var arr = [];
+			data.forEach(function(d) {
+				if(d.month == f_month && d.year == f_year && d.grid_id == id)
+					arr.push(d);
+			})
+			console.log(arr);
+			var cross = crossfilter(arr);
+			var line1 = dc.compositeChart("#d1");
+			var dim1 = cross.dimension(function(d) { return d.day; })
+			//var grp = dim.group().reduceSum(function(d) { return d.consumption; })
+			var grp1 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.consumption;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.consumption;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+            print_filter(grp1);
+            var grp2 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.min;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.min;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+             var grp3 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.max;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.max;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+              var grp4 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.mean;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.mean;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+
+
+            });
+
+
+            day_arr = d3.map(arr, function(d) {
+				return d.day;
+			}).keys();
+            line1
+				.width(800)
+				.height(350)
+				.margins({left:40,right:20,bottom:50,top:20})
+				//.dimension(dim1)
+				//.group(grp1)
+				//.keyAccessor(function(d){return d.key;})
+				//.valueAccessor(function(d){return d.value.avg;})
+				.x(d3.scale.ordinal().domain(day_arr))
+				.xUnits(dc.units.ordinal)
+				.yAxisLabel("Consumption(Give Units here)")
+				.xAxisLabel("Days")
+				.legend(dc.legend().x(620).y(200).itemHeight(13).gap(5))
+				.renderHorizontalGridLines(true)
+				.renderVerticalGridLines(true)
+				.renderTitle(true)
+				.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+				})
+				.compose([
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(grp1,"Avg Consumption")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('lightgreen')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					})
+					,
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(grp2,"Min Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('red')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.useRightYAxis(true)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					}),
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(grp3,"Max Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('blue')
+					.renderTitle(true)
+					.useRightYAxis(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					}),
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(grp4,"Mean Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('brown')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.useRightYAxis(true)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					})
+					])	
+				.brushOn(false);
+
+				
+			dc.renderAll();
+		}
+
+function print_filter(filter){
+	var f=eval(filter);
+	if (typeof(f.length) != "undefined") {}else{}
+	if (typeof(f.top) != "undefined") {f=f.top(Infinity);}else{}
+	if (typeof(f.dimension) != "undefined") {f=f.dimension(function(d) { return "";}).top(Infinity);}else{}
+	console.log(filter+"("+f.length+") = "+JSON.stringify(f).replace("[","[\n\t").replace(/}\,/g,"},\n\t").replace("]","\n]"));
+} 
+
+
+		function render2(data, id) {
+			var arr1=[];
+			var f_order = ['Jul-9', 'Aug-9', 'Sep-9', 'Oct-9', 'Nov-9', 'Dec-9', 'Jan-10', 'Feb-10', 'Mar-10', 'Apr-10', 'May-10', 'Jun-10', 'Jul-10', 'Aug-10', "Sep-10", 'Oct-10', 'Nov-10', 'Dec-10'];
+			data.forEach(function(d) {
+				for(i = 0; i < f_order.length; i++) {
+					if(d.new_month == f_order[i]) {
+						d.f_month = i + 1;
+					}
+				}
+				if(d.grid_id == id)
+					arr1.push(d);
+			})
+			var cross1 = crossfilter(arr1);
+			var line1 = dc.compositeChart("#d2");
+			var dim1 = cross1.dimension(function(d) { return d.new_month; })
+
+			var grp1 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.consumption;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.consumption;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+
+            var grp2 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.min;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.min;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+             var grp3 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.max;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.max;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+              var grp4 = dim1.group().reduce(function (p, v) {
+                ++p.count;
+                p.sum += v.mean;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function (p, v) {
+                --p.count;
+                p.sum -= v.mean;
+                p.avg = p.sum/p.count;
+                return p;
+            },
+            function () {
+                return { count:0, sum:0, avg:0};
+            });
+		//	console.log(print_filter(grp1))
+
+			var sorted_grp1=sort_group(grp1,f_order);
+			var sorted_grp2=sort_group(grp2,f_order);
+			var sorted_grp3=sort_group(grp3,f_order);
+			var sorted_grp4=sort_group(grp4,f_order);
+			line1
+				.width(800)
+				.height(350)
+				.margins({left:40,right:20,bottom:50,top:20})
+				.x(d3.scale.ordinal().domain(['Jul-9', 'Aug-9', 'Sep-9', 'Oct-9', 'Nov-9', 'Dec-9', 'Jan-10', 'Feb-10', 'Mar-10', 'Apr-10', 'May-10', 'Jun-10', 'Jul-10', 'Aug-10', "Sep-10", 'Oct-10', 'Nov-10', 'Dec-10']))
+				.xUnits(dc.units.ordinal)
+				.yAxisLabel("Consumption(Give Units here)")
+				.xAxisLabel("Months")
+				.legend(dc.legend().x(80).y(160).itemHeight(13).gap(5))
+				.renderHorizontalGridLines(true)
+				.renderVerticalGridLines(true)
+				.renderTitle(true)
+				.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+				})
+				.compose([
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(sorted_grp1,"Avg Consumption")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('lightgreen')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					}),
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(sorted_grp2,"Min Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('red')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.useRightYAxis(true)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					}),
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(sorted_grp3,"Max Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('blue')
+					.renderTitle(true)
+					.useRightYAxis(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					}),
+					dc.lineChart(line1)
+					.dimension(dim1)
+					.group(sorted_grp4,"Mean Temperature")
+					.keyAccessor(function(d){return d.key;})
+					.valueAccessor(function(d){return d.value.avg;})
+					.colors('brown')
+					.renderTitle(true)
+					// .renderDataPoints ({radius: 2, fillOpacity: 0.8, strokeOpacity: 0.8})
+					.brushOn(false)
+					.useRightYAxis(true)
+					.title(function(p){
+						return [p.key+" : "+numberFormat(p.value.avg)].join('\n');
+					})
+
+
+					
+
+					])
+				.brushOn(false);
+
+				
+			dc.renderAll();
+		}
+
+
+
+		function sort_group(group, order) {
+    		return {
+        		all: function() {
+            		var g = group.all(), map = {};
+
+            		g.forEach(function(kv) {
+                		map[kv.key] = kv.value;
+            		});
+            		return order.map(function(k) {
+                		return {key: k, value: map[k]};
+            	});
+        	}
+   		};
+};
+	</script>
+</body>
+</html>
