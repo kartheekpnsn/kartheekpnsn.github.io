@@ -8,6 +8,8 @@
 <body>
 	
 	<div id="d2"></div> <!-- For overall line chart -->
+	<hr>
+	<hr>
 	<div id="d1"></div> <!-- For daily line chart -->
 	
 	<select id="month">
@@ -179,7 +181,7 @@
 				//.valueAccessor(function(d){return d.value.avg;})
 				.x(d3.scale.ordinal().domain(day_arr))
 				.xUnits(dc.units.ordinal)
-				.yAxisLabel("Consumption(Give Units here)")
+				.yAxisLabel("Consumption")
 				.xAxisLabel("Days")
 				.legend(dc.legend().x(620).y(200).itemHeight(13).gap(5))
 				.renderHorizontalGridLines(true)
@@ -346,7 +348,7 @@ function print_filter(filter){
 				.margins({left:40,right:20,bottom:50,top:20})
 				.x(d3.scale.ordinal().domain(['Jul-9', 'Aug-9', 'Sep-9', 'Oct-9', 'Nov-9', 'Dec-9', 'Jan-10', 'Feb-10', 'Mar-10', 'Apr-10', 'May-10', 'Jun-10', 'Jul-10', 'Aug-10', "Sep-10", 'Oct-10', 'Nov-10', 'Dec-10']))
 				.xUnits(dc.units.ordinal)
-				.yAxisLabel("Consumption(Give Units here)")
+				.yAxisLabel("Consumption")
 				.xAxisLabel("Months")
 				.legend(dc.legend().x(80).y(160).itemHeight(13).gap(5))
 				.renderHorizontalGridLines(true)
