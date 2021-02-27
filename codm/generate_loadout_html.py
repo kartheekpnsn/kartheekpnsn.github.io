@@ -18,16 +18,11 @@ for idx, row in loadouts_data.iterrows():
     loadout_text = loadout_text + f"\t<td style='text-align: center; vertical-align: middle;'><b>{row['Gun']}</b></td>\n"
     loadout_text = loadout_text + generate_tr_text(row['Mode'])
     loadout_text = loadout_text + generate_tr_text(row['From'])
-    loadout_text = loadout_text + generate_tr_text(row['Muzzle'])
-    loadout_text = loadout_text + generate_tr_text(row['Barrel'])
-    loadout_text = loadout_text + generate_tr_text(row['Optic'])
-    loadout_text = loadout_text + generate_tr_text(row['Stock'])
-    loadout_text = loadout_text + generate_tr_text(row['Perk'])
-    loadout_text = loadout_text + generate_tr_text(row['Laser'])
-    loadout_text = loadout_text + generate_tr_text(row['Underbarrel'])
-    loadout_text = loadout_text + generate_tr_text(row['Ammunition'])
-    loadout_text = loadout_text + generate_tr_text(row['RearGrip'])
-    loadout_text = loadout_text + f"</tr>\n"
+    _tmp_text = "<ul>\n"
+    for col in list(loadouts_data.columns):
+        if col not in ['From', 'Mode', 'Gun'] and row[col] != "":
+            _tmp_text = _tmp_text + f"<li><b>{col}</b>: {row[col]}</li>"
+    loadout_text = loadout_text + f"<td>{_tmp_text}</td>"
 
 loadouts_template = loadouts_template.replace("<tr_replace>", loadout_text)
 with open("../loadouts.html", "w") as fb:
