@@ -1,0 +1,222 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 800px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4285F4", "id": "Sankranti", "label": "Sankranti", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Biriyani", "label": "Biriyani", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Maggie Hut", "label": "Maggie Hut", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Maggie", "label": "Maggie", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Cake Roven", "label": "Cake Roven", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Starters", "label": "Starters", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Fud da Punjab", "label": "Fud da Punjab", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Pulka", "label": "Pulka", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Idli-Dosa Lakshmi puram", "label": "Idli-Dosa Lakshmi puram", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Idli", "label": "Idli", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Barkaas", "label": "Barkaas", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Mandi", "label": "Mandi", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Varalakshmi", "label": "Varalakshmi", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Bonda", "label": "Bonda", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Pallekodi Pullatlu", "label": "Pallekodi Pullatlu", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Dosa", "label": "Dosa", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Art of Kitchen", "label": "Art of Kitchen", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "TBD", "label": "TBD", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Chat near Pallekodi", "label": "Chat near Pallekodi", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Chat", "label": "Chat", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Hangout", "label": "Hangout", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Burger", "label": "Burger", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Teas \u0026 Trees", "label": "Teas \u0026 Trees", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Masala rice", "label": "Masala rice", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Jail Mandi", "label": "Jail Mandi", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Mourya", "label": "Mourya", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Geetha", "label": "Geetha", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Venkatesh Grand", "label": "Venkatesh Grand", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Uday Shankar", "label": "Uday Shankar", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Meals", "label": "Meals", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "SSS Tiffins", "label": "SSS Tiffins", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Iceberg", "label": "Iceberg", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Icecreams", "label": "Icecreams", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Creamstone", "label": "Creamstone", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Duromont", "label": "Duromont", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "McD", "label": "McD", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Hot chocolate", "label": "Hot chocolate", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Dominos", "label": "Dominos", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Pizza", "label": "Pizza", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Pizza hut", "label": "Pizza hut", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Subway", "label": "Subway", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Salad", "label": "Salad", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Navya Grand", "label": "Navya Grand", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Malpuri Bandi, Vidya Nagar", "label": "Malpuri Bandi, Vidya Nagar", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Malpuri", "label": "Malpuri", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Kritunga", "label": "Kritunga", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Vankaay Bajji, Pattabhipuram", "label": "Vankaay Bajji, Pattabhipuram", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Vankaay Bajji", "label": "Vankaay Bajji", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Masala Bandi, Pattabhipuram", "label": "Masala Bandi, Pattabhipuram", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Masala", "label": "Masala", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Aathidyam", "label": "Aathidyam", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Meals (afternoon)", "label": "Meals (afternoon)", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Orion", "label": "Orion", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Roti/Naan", "label": "Roti/Naan", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Atu/Itu", "label": "Atu/Itu", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Ravi Tasty Foods", "label": "Ravi Tasty Foods", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Capital", "label": "Capital", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Brodipet Sindhoori backside", "label": "Brodipet Sindhoori backside", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Chitti Idli", "label": "Chitti Idli", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "99 Varieties of Dosa", "label": "99 Varieties of Dosa", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Matka Chai", "label": "Matka Chai", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Tea", "label": "Tea", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Starbucks", "label": "Starbucks", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Java chip Frappe", "label": "Java chip Frappe", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Eagle Food court", "label": "Eagle Food court", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "The # Box", "label": "The # Box", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Coffee sense", "label": "Coffee sense", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Coffee", "label": "Coffee", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Subaani", "label": "Subaani", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Bandi, Vidya Nagar Road", "label": "Bandi, Vidya Nagar Road", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Fried rice", "label": "Fried rice", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Bakers Fun, Vidya Nagar", "label": "Bakers Fun, Vidya Nagar", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Flachesos", "label": "Flachesos", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "BBQ", "label": "BBQ", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Barbeque Nations", "label": "Barbeque Nations", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Frozen Bottle", "label": "Frozen Bottle", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "Milkshakes", "label": "Milkshakes", "shape": "dot", "size": 30}, {"color": "#4285F4", "id": "Andhra Kitchen", "label": "Andhra Kitchen", "shape": "dot", "size": 50}, {"color": "#4285F4", "id": "Kelvin Scale", "label": "Kelvin Scale", "shape": "dot", "size": 50}, {"color": "#EA4335", "id": "French Fries", "label": "French Fries", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Parotta", "label": "Parotta", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Panipuri", "label": "Panipuri", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Vada", "label": "Vada", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Desserts", "label": "Desserts", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Sub", "label": "Sub", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Ulli Mirchi Bajji", "label": "Ulli Mirchi Bajji", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Noodles", "label": "Noodles", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Double choclate chip frappe", "label": "Double choclate chip frappe", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Muddha pappu", "label": "Muddha pappu", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Pastry", "label": "Pastry", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Puri", "label": "Puri", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Garlic bread", "label": "Garlic bread", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Gunta Ponganalu", "label": "Gunta Ponganalu", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Pulihora Dosa", "label": "Pulihora Dosa", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Chocolate coffee", "label": "Chocolate coffee", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Caffe Mocha", "label": "Caffe Mocha", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Manchurian", "label": "Manchurian", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Puff", "label": "Puff", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Vada pav", "label": "Vada pav", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Brownie", "label": "Brownie", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Jalepeno pops", "label": "Jalepeno pops", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Masala papad", "label": "Masala papad", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Cappuccino", "label": "Cappuccino", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Pav bhaji", "label": "Pav bhaji", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Crossaint", "label": "Crossaint", "shape": "dot", "size": 30}, {"color": "#EA4335", "id": "Sandwich", "label": "Sandwich", "shape": "dot", "size": 30}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Sankranti", "to": "Biriyani"}, {"arrows": "to", "from": "Sankranti", "to": "Fried rice"}, {"arrows": "to", "from": "Sankranti", "to": "Muddha pappu"}, {"arrows": "to", "from": "Sankranti", "to": "Roti/Naan"}, {"arrows": "to", "from": "Sankranti", "to": "Brownie"}, {"arrows": "to", "from": "Sankranti", "to": "Starters"}, {"arrows": "to", "from": "Sankranti", "to": "Masala papad"}, {"arrows": "to", "from": "Maggie Hut", "to": "Maggie"}, {"arrows": "to", "from": "Cake Roven", "to": "Starters"}, {"arrows": "to", "from": "Cake Roven", "to": "French Fries"}, {"arrows": "to", "from": "Cake Roven", "to": "Pastry"}, {"arrows": "to", "from": "Cake Roven", "to": "Puff"}, {"arrows": "to", "from": "Cake Roven", "to": "Pulka"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Pulka"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Chat"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Panipuri"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Vada pav"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Pav bhaji"}, {"arrows": "to", "from": "Fud da Punjab", "to": "Masala rice"}, {"arrows": "to", "from": "Idli-Dosa Lakshmi puram", "to": "Idli"}, {"arrows": "to", "from": "Idli-Dosa Lakshmi puram", "to": "Dosa"}, {"arrows": "to", "from": "Barkaas", "to": "Mandi"}, {"arrows": "to", "from": "Varalakshmi", "to": "Bonda"}, {"arrows": "to", "from": "Varalakshmi", "to": "Idli"}, {"arrows": "to", "from": "Varalakshmi", "to": "Dosa"}, {"arrows": "to", "from": "Pallekodi Pullatlu", "to": "Dosa"}, {"arrows": "to", "from": "Pallekodi Pullatlu", "to": "Parotta"}, {"arrows": "to", "from": "Art of Kitchen", "to": "TBD"}, {"arrows": "to", "from": "Chat near Pallekodi", "to": "Chat"}, {"arrows": "to", "from": "Chat near Pallekodi", "to": "Panipuri"}, {"arrows": "to", "from": "Hangout", "to": "Burger"}, {"arrows": "to", "from": "Hangout", "to": "Pizza"}, {"arrows": "to", "from": "Hangout", "to": "Noodles"}, {"arrows": "to", "from": "Hangout", "to": "Fried rice"}, {"arrows": "to", "from": "Hangout", "to": "Milkshakes"}, {"arrows": "to", "from": "Hangout", "to": "Icecreams"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Masala rice"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "French Fries"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Milkshakes"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Brownie"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Maggie"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Sandwich"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Garlic bread"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Coffee"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Tea"}, {"arrows": "to", "from": "Teas \u0026 Trees", "to": "Hot chocolate"}, {"arrows": "to", "from": "Jail Mandi", "to": "Mandi"}, {"arrows": "to", "from": "Mourya", "to": "Dosa"}, {"arrows": "to", "from": "Mourya", "to": "Idli"}, {"arrows": "to", "from": "Mourya", "to": "Pulka"}, {"arrows": "to", "from": "Geetha", "to": "Pulka"}, {"arrows": "to", "from": "Geetha", "to": "Dosa"}, {"arrows": "to", "from": "Geetha", "to": "Puri"}, {"arrows": "to", "from": "Geetha", "to": "Idli"}, {"arrows": "to", "from": "Venkatesh Grand", "to": "Pulka"}, {"arrows": "to", "from": "Venkatesh Grand", "to": "Biriyani"}, {"arrows": "to", "from": "Venkatesh Grand", "to": "Fried rice"}, {"arrows": "to", "from": "Venkatesh Grand", "to": "Starters"}, {"arrows": "to", "from": "Uday Shankar", "to": "Meals"}, {"arrows": "to", "from": "Uday Shankar", "to": "Fried rice"}, {"arrows": "to", "from": "SSS Tiffins", "to": "Idli"}, {"arrows": "to", "from": "SSS Tiffins", "to": "Vada"}, {"arrows": "to", "from": "SSS Tiffins", "to": "Dosa"}, {"arrows": "to", "from": "Iceberg", "to": "Icecreams"}, {"arrows": "to", "from": "Creamstone", "to": "Icecreams"}, {"arrows": "to", "from": "Duromont", "to": "Icecreams"}, {"arrows": "to", "from": "Duromont", "to": "Milkshakes"}, {"arrows": "to", "from": "McD", "to": "Hot chocolate"}, {"arrows": "to", "from": "McD", "to": "Burger"}, {"arrows": "to", "from": "McD", "to": "French Fries"}, {"arrows": "to", "from": "Dominos", "to": "Pizza"}, {"arrows": "to", "from": "Dominos", "to": "Desserts"}, {"arrows": "to", "from": "Dominos", "to": "Garlic bread"}, {"arrows": "to", "from": "Pizza hut", "to": "Pizza"}, {"arrows": "to", "from": "Pizza hut", "to": "Desserts"}, {"arrows": "to", "from": "Pizza hut", "to": "Garlic bread"}, {"arrows": "to", "from": "Pizza hut", "to": "Jalepeno pops"}, {"arrows": "to", "from": "Subway", "to": "Salad"}, {"arrows": "to", "from": "Subway", "to": "Sub"}, {"arrows": "to", "from": "Navya Grand", "to": "Starters"}, {"arrows": "to", "from": "Navya Grand", "to": "Roti/Naan"}, {"arrows": "to", "from": "Navya Grand", "to": "Biriyani"}, {"arrows": "to", "from": "Malpuri Bandi, Vidya Nagar", "to": "Malpuri"}, {"arrows": "to", "from": "Kritunga", "to": "Starters"}, {"arrows": "to", "from": "Kritunga", "to": "Biriyani"}, {"arrows": "to", "from": "Vankaay Bajji, Pattabhipuram", "to": "Vankaay Bajji"}, {"arrows": "to", "from": "Vankaay Bajji, Pattabhipuram", "to": "Ulli Mirchi Bajji"}, {"arrows": "to", "from": "Masala Bandi, Pattabhipuram", "to": "Masala"}, {"arrows": "to", "from": "Masala Bandi, Pattabhipuram", "to": "Ulli Mirchi Bajji"}, {"arrows": "to", "from": "Aathidyam", "to": "Meals (afternoon)"}, {"arrows": "to", "from": "Aathidyam", "to": "Dosa"}, {"arrows": "to", "from": "Aathidyam", "to": "Idli"}, {"arrows": "to", "from": "Orion", "to": "Roti/Naan"}, {"arrows": "to", "from": "Orion", "to": "Noodles"}, {"arrows": "to", "from": "Orion", "to": "Fried rice"}, {"arrows": "to", "from": "Orion", "to": "Dosa"}, {"arrows": "to", "from": "Orion", "to": "Idli"}, {"arrows": "to", "from": "Orion", "to": "Puri"}, {"arrows": "to", "from": "Orion", "to": "Starters"}, {"arrows": "to", "from": "Orion", "to": "Masala papad"}, {"arrows": "to", "from": "Atu/Itu", "to": "Dosa"}, {"arrows": "to", "from": "Atu/Itu", "to": "Idli"}, {"arrows": "to", "from": "Atu/Itu", "to": "Gunta Ponganalu"}, {"arrows": "to", "from": "Ravi Tasty Foods", "to": "Pulka"}, {"arrows": "to", "from": "Capital", "to": "Roti/Naan"}, {"arrows": "to", "from": "Capital", "to": "Starters"}, {"arrows": "to", "from": "Capital", "to": "Biriyani"}, {"arrows": "to", "from": "Capital", "to": "Masala papad"}, {"arrows": "to", "from": "Brodipet Sindhoori backside", "to": "Chitti Idli"}, {"arrows": "to", "from": "Brodipet Sindhoori backside", "to": "Dosa"}, {"arrows": "to", "from": "Brodipet Sindhoori backside", "to": "Pulihora Dosa"}, {"arrows": "to", "from": "Brodipet Sindhoori backside", "to": "Idli"}, {"arrows": "to", "from": "99 Varieties of Dosa", "to": "Dosa"}, {"arrows": "to", "from": "Matka Chai", "to": "Tea"}, {"arrows": "to", "from": "Matka Chai", "to": "Coffee"}, {"arrows": "to", "from": "Matka Chai", "to": "Chocolate coffee"}, {"arrows": "to", "from": "Starbucks", "to": "Java chip Frappe"}, {"arrows": "to", "from": "Starbucks", "to": "Double choclate chip frappe"}, {"arrows": "to", "from": "Starbucks", "to": "Caffe Mocha"}, {"arrows": "to", "from": "Starbucks", "to": "Cappuccino"}, {"arrows": "to", "from": "Starbucks", "to": "Crossaint"}, {"arrows": "to", "from": "Eagle Food court", "to": "Roti/Naan"}, {"arrows": "to", "from": "Eagle Food court", "to": "Starters"}, {"arrows": "to", "from": "Eagle Food court", "to": "Pulka"}, {"arrows": "to", "from": "The # Box", "to": "Biriyani"}, {"arrows": "to", "from": "The # Box", "to": "Roti/Naan"}, {"arrows": "to", "from": "The # Box", "to": "Starters"}, {"arrows": "to", "from": "Coffee sense", "to": "Coffee"}, {"arrows": "to", "from": "Coffee sense", "to": "Milkshakes"}, {"arrows": "to", "from": "Coffee sense", "to": "Biriyani"}, {"arrows": "to", "from": "Subaani", "to": "Biriyani"}, {"arrows": "to", "from": "Bandi, Vidya Nagar Road", "to": "Fried rice"}, {"arrows": "to", "from": "Bandi, Vidya Nagar Road", "to": "Noodles"}, {"arrows": "to", "from": "Bandi, Vidya Nagar Road", "to": "Manchurian"}, {"arrows": "to", "from": "Bakers Fun, Vidya Nagar", "to": "Fried rice"}, {"arrows": "to", "from": "Bakers Fun, Vidya Nagar", "to": "Noodles"}, {"arrows": "to", "from": "Flachesos", "to": "BBQ"}, {"arrows": "to", "from": "Barbeque Nations", "to": "BBQ"}, {"arrows": "to", "from": "Frozen Bottle", "to": "Milkshakes"}, {"arrows": "to", "from": "Andhra Kitchen", "to": "TBD"}, {"arrows": "to", "from": "Kelvin Scale", "to": "Icecreams"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"barnesHut": {"gravitationalConstant": -4050, "springLength": 225, "springConstant": 0.065, "damping": 0.1, "avoidOverlap": 1}, "minVelocity": 0.75}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
