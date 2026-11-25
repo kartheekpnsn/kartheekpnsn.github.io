@@ -1,5 +1,7 @@
 # Lightbox2
 
+This is a retained legacy vendor snapshot, not the current portfolio gallery. Its unused Grunt dependencies, build tasks, and lint configuration have been removed; source, prebuilt assets, and license are preserved. Use the root [portfolio development commands](../../README.md#local-development) to build and preview the current site.
+
 The original lightbox script. Eight years later — still going strong!
 
 Lightbox is small javascript library used to overlay images on top of the current page. It's a snap to setup and works on all modern browsers.
@@ -113,10 +115,6 @@ by [Lokesh Dhakar](http://www.lokeshdhakar.com)
 - [Add] Repo created on Github
 
 
-## How to deploy
+## Local maintenance
 
-- Update version number in ```src/lightbox.js```
-- Update README.md Changelog with release date
-- grunt build
-- Push to Github repo
-- Create a new Github release along with tag. Naming convention for both ```v2.8.1```
+The original Grunt build and upstream release process are no longer supported in this snapshot. No dependency installation is needed here. Do not regenerate the prebuilt legacy assets as part of the portfolio build.

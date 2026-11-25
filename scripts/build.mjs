@@ -9,7 +9,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const out = path.join(root, 'dist');
 await rm(out, { recursive: true, force: true });
 await mkdir(path.join(out, 'photography'), { recursive: true });
-for (const item of ['index.html', 'photography/index.html', 'assets', 'stylesheets/site.css', 'locations', 'topics/index.html', 'topics/UltraBERT/index.html', 'favicon.ico', 'google288d4618e190d101.html']) {
+for (const item of [
+  'index.html', 'photography/index.html', 'assets', 'stylesheets/site.css', 'locations',
+  'unfold/topics/index.html', 'unfold/topics/UltraBERT/index.html',
+  'unfold/topics/ModernBERT/index.html', 'unfold/topics/Cascade-Vs-Speech-To-Speech-In-Azure-Voice-Agents/index.html',
+  'favicon.ico', 'google288d4618e190d101.html',
+]) {
   await cp(path.join(root, item), path.join(out, item), { recursive: true });
 }
 await mkdir(path.join(out, 'assets/vendor'), { recursive: true });

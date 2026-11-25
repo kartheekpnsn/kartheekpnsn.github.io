@@ -31,6 +31,8 @@ The gallery still requires generated assets: previewing the repository's source 
 
 Three.js is pinned and bundled locally with esbuild during the small Node.js build step. There is no application framework. Reduced-motion visitors receive a static illustration and single-step experiment controls; WebGL failures leave the profile usable and are explicitly reported.
 
+The retained [legacy Lightbox snapshot](photography/lightbox2-master/) is not used by the current gallery or deployment build. Its obsolete Grunt dependencies and build/lint configuration have been removed; source, prebuilt static assets, and licensing are unchanged. No separate installation or Grunt command is needed there.
+
 ## Add or remove photos
 
 1. Add `.jpg`, `.jpeg`, `.png`, or `.webp` originals directly to [photography/mySnaps/](photography/mySnaps/). Uppercase extensions are supported. Subdirectories, including legacy thumbnails, are ignored.
@@ -76,7 +78,7 @@ Homepage budgets: at most 250 KB gzipped JavaScript including Three.js and 1 MB 
 
 [The Pages workflow](.github/workflows/pages.yml) tests/builds pull requests and builds/deploys pushes to `master` or manual runs. Only the explicit `dist/` artifact is uploaded; raw photos, reference PDFs/TeX, development scripts, and the plan are excluded. Existing independent [location pages](locations/) remain in the artifact at their existing paths.
 
-The finished [topic library](topics/index.html) and [UltraBERT lesson](topics/UltraBERT/index.html) are also included. Local `_unfold/` research, build notes, and QA artifacts are not published.
+The homepage links to the [Unfold topic library](unfold/topics/index.html) as **Technical learnings**, with a **Learnings** navigation shortcut. The library and the finished [UltraBERT](unfold/topics/UltraBERT/index.html), [ModernBERT](unfold/topics/ModernBERT/index.html), and [Azure voice agents](unfold/topics/Cascade-Vs-Speech-To-Speech-In-Azure-Voice-Agents/index.html) lessons are explicitly included in the deployment. Local `_unfold/` research, build notes, and QA artifacts are not published.
 
 **One-time repository setup is required:** at implementation time GitHub reported `has_pages: false`, and the Pages endpoint returned 404. An authorized owner must enable **Settings → Pages → Build and deployment → Source: GitHub Actions**. The workflow does not enable Pages or change repository settings itself. Review the `github-pages` environment protection rules before publishing.
 
