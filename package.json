@@ -1,0 +1,22 @@
+{
+  "name": "kartheek-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepreview": "npm run build",
+    "preview": "node scripts/serve.mjs",
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "check:links": "node scripts/check.mjs --external"
+  },
+  "dependencies": {
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "sharp": "0.35.5"
+  }
+}

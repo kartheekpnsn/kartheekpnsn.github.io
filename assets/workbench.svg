@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760">
+  <defs>
+    <linearGradient id="plate" x2="1" y2="1"><stop stop-color="#21393d"/><stop offset="1" stop-color="#0b151a"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#58dfcd" stop-opacity=".16"/><stop offset="1" stop-color="#58dfcd" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#60cabc" stroke-opacity=".15"/></pattern>
+  </defs>
+  <ellipse cx="530" cy="460" rx="470" ry="280" fill="url(#glow)"/>
+  <g transform="translate(485 430) rotate(-28) skewX(30) scale(1 .65)">
+    <rect x="-290" y="-200" width="590" height="450" rx="20" fill="#070d10" stroke="#234a4d" stroke-width="2" transform="translate(0 22)"/>
+    <rect x="-290" y="-200" width="590" height="450" rx="20" fill="url(#plate)" stroke="#4daba3" stroke-opacity=".6"/>
+    <rect x="-270" y="-180" width="550" height="410" fill="url(#grid)"/>
+    <g fill="none" stroke="#66dfce" stroke-width="2"><circle cx="-80" cy="40" r="105"/><circle cx="-80" cy="40" r="72" stroke-dasharray="6 10"/><path d="M25 40h95V-70h130M-80 145v58h290"/></g>
+    <g fill="#66dfce"><circle cx="-105" cy="15" r="7"/><circle cx="-52" cy="55" r="6"/><circle cx="-120" cy="72" r="5"/><circle cx="-59" cy="5" r="8"/><circle cx="-100" cy="102" r="5"/></g>
+    <g fill="#eab56b"><circle cx="120" cy="-70" r="9"/><circle cx="170" cy="-40" r="5"/><circle cx="150" cy="-100" r="6"/><circle cx="90" cy="-110" r="5"/></g>
+  </g>
+  <g fill="none" stroke="#66dfce"><path d="M585 359V143l165-73v216Z" fill="#65dfce" fill-opacity=".035"/><path d="m604 304 20-58 24 11 20-68 23 14 37-77" stroke-width="2"/><path d="m604 326 124-55M604 201l124-55" opacity=".3"/></g>
+  <g fill="#eab56b"><circle cx="585" cy="359" r="5"/><circle cx="750" cy="286" r="5"/></g>
+  <g font-family="monospace" font-size="12" letter-spacing="3" fill="#81a6a8"><text x="177" y="630">OBSERVE / LEARN / DISCOVER</text><text x="590" y="112" transform="rotate(-24 590 112)">LATENT SPACE</text></g>
+</svg>
