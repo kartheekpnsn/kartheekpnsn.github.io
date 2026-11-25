@@ -2,6 +2,7 @@ node_modules/
 dist/
 .DS_Store
 references/
+chat_explore/
 .env
 .env.*
 !.env.example

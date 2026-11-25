@@ -91,6 +91,8 @@ Do not deploy the repository root using a legacy branch-based configuration: it 
 
 The supplied LinkedIn PDF is authoritative for the current role/timeline; the CV supplies supporting background. The public site omits phone numbers, employer project names, exact business-impact figures, and internal award documents. The local `references/` folder is ignored and excluded from deployment. Do not commit the supplied documents. Personal project visuals are original illustrations, not screenshots of private conversations.
 
+Private chat reports and their assets under `chat_explore/` are excluded from published history and ignored to prevent accidental recommits. The public Chat Explore project card links only to its source repository, not to personal reports. History rewriting cannot remove downloaded copies or guarantee removal of GitHub caches; cached views may require a GitHub Support purge.
+
 Environment files, common private-key formats, and credential files are ignored as a safeguard, not a substitute for credential scanning. Keep locations and original photographs public only when their contents and metadata are approved. If a real secret is ever committed, revoke/rotate it first: deleting a file or rewriting history cannot invalidate a credential or erase copies already downloaded.
 
 ## Attribution
